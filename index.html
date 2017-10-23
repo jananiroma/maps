@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Prueba</title> <!-- Título de la pestaña -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> <!-- Estilos -->
+	<style>
+	html, body{
+		height: 100%;
+	}
+	#map {
+		height: 90%;
+		width: 100%;
+	}
+    </style>
+</head>
+<body>
+	<button id="filtro1" class="btn btn-success">Filtro 1</button>
+	<button id="filtro2" class="btn btn-success">Filtro 2</button>
+	<select name="" id="filtro3">
+		<option value="" disabled selected>Elige un Distrito</option>
+		<option value="4">Distrito 4</option>
+		<option value="9">Distrito 9</option>
+	</select>
+	<select id="filtro4">
+		<option value="" disabled selected>Elige el nivel de Competitividad</option>
+		<option value="5">Muy Alta</option>
+		<option value="4">Alta</option>
+		<option value="3">Media</option>
+		<option value="2">Baja</option>
+		<option value="1">Muy baja</option>
+		<option value="0">Nula</option>
+	</select>
+	<div id="map"></div>
+	<script
+	  src="https://code.jquery.com/jquery-3.2.1.min.js"
+	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	  crossorigin="anonymous"></script>
+	<script>
+		var map, layer1, layer2, layer3
+		function initMap() {
+		  map = new google.maps.Map(document.getElementById('map'), {
+		    center: {lat: 20.688715, lng: -101.356684},
+		    zoom: 11
+		  });
+		}
+
+		$('#filtro1').click(function(event) {
+			layer1 = new google.maps.FusionTablesLayer({
+			    query: {
+			      select: 'Competitividad',
+			      from: '1if0DAMfJ6S-B2PJrP8zqwiyfOmr03-RHg2_iucTU'
+
+			    },
+			    styles: [
+	          		{
+		            	where: 'Competitividad = '+'"Muy alta"', //"'Store Name' IN (" + filter.join(',') + ')'
+		            	polygonOptions: {
+		              		fillColor: '#399609',
+		              		fillOpacity: 1
+		            	}
+	          		},
+	          		{
+			            where: 'Competitividad = Alta',
+			            polygonOptions: {
+			              fillColor: '#B37C4C',
+			              fillOpacity: 1
+			            }
+	          		},
+	          		{
+			            where: 'Competitividad = Media',
+			            polygonOptions: {
+			              fillColor: '#ffed3f',
+			              fillOpacity: 1
+			            }
+	          		},
+	          		{
+			            where: 'Competitividad = Baja',
+			            polygonOptions: {
+			              fillColor: '#ff00ff',
+			              fillOpacity: 1
+			            }
+	          		},
+	          		{
+			            where: 'Competitividad = Muy Baja',
+			            polygonOptions: {
+			              fillColor: '#ff3f49',
+			              fillOpacity: 1
+			            }
+	          		},
+	          		{
+			            where: 'Competitividad = Nula',
+			            polygonOptions: {
+			              fillColor: '#10dfcf',
+			              fillOpacity: 1
+			            }
+	          		}
+	          ]
+		  });
+		  initMap()
+		  addLayer(layer1)
+		});
+
+		$('#filtro2').click(function(event) {
+			layer2 = new google.maps.FusionTablesLayer({
+		    query: {
+		      select: 'Ganador',
+		      from: '1if0DAMfJ6S-B2PJrP8zqwiyfOmr03-RHg2_iucTU',
+		      where: 'SECCION = 1074'
+		    },
+		    styles: [
+		    	{
+		            polygonOptions: {
+         		    	fillColor: '#00ff00',
+             			fillOpacity: 0.1
+            		}
+          		},
+          		{
+	            	where: 'Etiqueta = 1',
+	            	polygonOptions: {
+	              		fillColor: '#ff4c79',
+	              		fillOpacity: 0.5
+	            	}
+          		},
+          		{
+		            where: 'Etiqueta = 2',
+		            polygonOptions: {
+		              fillColor: '#ff4c79',
+		              fillOpacity: 0.5
+		            }
+          		}
+          ]
+		  });
+		  initMap()
+		  addLayer(layer2)
+		});
+
+		$('#filtro3').change(function(event) {
+			layer3 = new google.maps.FusionTablesLayer({
+		    query: {
+		      select: '*',
+		      from: '1if0DAMfJ6S-B2PJrP8zqwiyfOmr03-RHg2_iucTU',
+		      where: generateWhere()
+		    },
+		    styles: [
+		    	{
+		            polygonOptions: {
+         		    	fillColor: '#00ff00',
+             			fillOpacity: 0.1
+            		}
+          		},
+          		{
+	            	where: 'Etiqueta = 1',
+	            	polygonOptions: {
+	              		fillColor: '#4CA6FF',
+	              		fillOpacity: 0.5
+	            	}
+          		},
+          		{
+		            where: 'Etiqueta = 2',
+		            polygonOptions: {
+		              fillColor: '#ff4c79',
+		              fillOpacity: 0.5
+		            }
+          		}
+          ]
+		  });
+		  initMap()
+		  addLayer(layer3)
+		});
+
+		$('#filtro4').change(function(event) {
+			console.log($(this).val());
+			layer1 = new google.maps.FusionTablesLayer({
+		    query: {
+		      select: 'ganador',
+		      from: '1if0DAMfJ6S-B2PJrP8zqwiyfOmr03-RHg2_iucTU',
+		    },
+		    styles: [
+		    	{
+		            polygonOptions: {
+         		    	fillColor: '#00ff00',
+             			fillOpacity: 0.1
+            		}
+          		},
+          		{
+	            	where: 'Etiqcompe < 4',
+	            	polygonOptions: {
+	              		fillColor: '#4CA6FF',
+	              		fillOpacity: 0.5
+	            	}
+          		},
+          		{
+		            where: 'Etiqcompe == 4',
+		            polygonOptions: {
+		              fillColor: '#ff4c79',
+		              fillOpacity: 0.5
+		            }
+          		},
+          		{
+		            where: 'Etiqcompe == 3',
+		            polygonOptions: {
+		              fillColor: '#7fff4c',
+		              fillOpacity: 0.5
+		            }
+          		},
+          		{
+		            where: 'Etiqcompe == 2',
+		            polygonOptions: {
+		              fillColor: '#7fff4c',
+		              fillOpacity: 0.5
+		            }
+          		},
+          		{
+		            where: 'Etiqcompe == 1',
+		            polygonOptions: {
+		              fillColor: '#fdff4c',
+		              fillOpacity: 0.5
+		            }
+		        },
+      			{
+		            where: 'Etiqcompe == 0',
+		            polygonOptions: {
+		              fillColor: '#7316d4',
+		              fillOpacity: 0.5
+		            }
+	      		}
+          	]
+		  });
+		  initMap()
+		  addLayer(layer1)
+		});
+
+		function addLayer(layer) {
+			layer.setMap(map)
+		}
+
+		function removeLayer(layer) {
+			layer.setMap(null)
+		}
+
+		function generateWhere() {
+        var filter = [];
+        var stores = document.getElementsByName('option');
+        for (var i = 0, store; store = stores[i]; i++) {
+          if (store.selected) {
+            var storeName = store.value.replace(/'/g, '\\\'');
+            filter.push("'" + storeName + "'");
+          }
+        }
+        var where = '';
+        if (filter.length) {
+          where = "'Competitividad' = (" + filter.join(',') + ')';
+        }
+        return where;
+      }
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrt56woKk7ymb9VBJI28B8_znGc7JZDm8&callback=initMap"
+        async defer></script>
+</body>
+</html>
